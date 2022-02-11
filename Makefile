@@ -27,7 +27,7 @@ OBJECTS = parser.tab.o lex.yy.o ${OFILES}
 # How to make the whole program
 # (don't forget the Lex Library "-ll")
 ${PROGRAM} : ${OBJECTS}
-	${CC} ${CFLAGS} ${OBJECTS} -o ${PROGRAM} -ll
+	${CC} ${CFLAGS} ${OBJECTS} -o ${PROGRAM} 
 
 
 # 
