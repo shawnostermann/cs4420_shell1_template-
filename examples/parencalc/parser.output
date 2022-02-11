@@ -1,0 +1,241 @@
+Grammar
+
+    0 $accept: input $end
+
+    1 input: lines
+    2      | ε
+
+    3 lines: oneline EOLN
+    4      | oneline EOLN lines
+
+    5 oneline: term
+    6        | error
+
+    7 term: NUMBER
+    8     | LPAREN expr RPAREN
+
+    9 expr: term oper term
+
+   10 oper: PLUS
+   11     | MINUS
+   12     | TIMES
+   13     | DIVIDE
+   14     | POWER
+
+
+Terminals, with rules where they appear
+
+    $end (0) 0
+    error (256) 6
+    EOLN (258) 3 4
+    PLUS (259) 10
+    MINUS (260) 11
+    TIMES (261) 12
+    DIVIDE (262) 13
+    POWER (263) 14
+    LPAREN (264) 8
+    RPAREN (265) 8
+    NUMBER <number> (266) 7
+
+
+Nonterminals, with rules where they appear
+
+    $accept (12)
+        on left: 0
+    input (13)
+        on left: 1 2
+        on right: 0
+    lines (14)
+        on left: 3 4
+        on right: 1 4
+    oneline (15)
+        on left: 5 6
+        on right: 3 4
+    term <pexpr> (16)
+        on left: 7 8
+        on right: 5 9
+    expr <pexpr> (17)
+        on left: 9
+        on right: 8
+    oper <op> (18)
+        on left: 10 11 12 13 14
+        on right: 9
+
+
+State 0
+
+    0 $accept: • input $end
+
+    error   shift, and go to state 1
+    LPAREN  shift, and go to state 2
+    NUMBER  shift, and go to state 3
+
+    $end  reduce using rule 2 (input)
+
+    input    go to state 4
+    lines    go to state 5
+    oneline  go to state 6
+    term     go to state 7
+
+
+State 1
+
+    6 oneline: error •
+
+    $default  reduce using rule 6 (oneline)
+
+
+State 2
+
+    8 term: LPAREN • expr RPAREN
+
+    LPAREN  shift, and go to state 2
+    NUMBER  shift, and go to state 3
+
+    term  go to state 8
+    expr  go to state 9
+
+
+State 3
+
+    7 term: NUMBER •
+
+    $default  reduce using rule 7 (term)
+
+
+State 4
+
+    0 $accept: input • $end
+
+    $end  shift, and go to state 10
+
+
+State 5
+
+    1 input: lines •
+
+    $default  reduce using rule 1 (input)
+
+
+State 6
+
+    3 lines: oneline • EOLN
+    4      | oneline • EOLN lines
+
+    EOLN  shift, and go to state 11
+
+
+State 7
+
+    5 oneline: term •
+
+    $default  reduce using rule 5 (oneline)
+
+
+State 8
+
+    9 expr: term • oper term
+
+    PLUS    shift, and go to state 12
+    MINUS   shift, and go to state 13
+    TIMES   shift, and go to state 14
+    DIVIDE  shift, and go to state 15
+    POWER   shift, and go to state 16
+
+    oper  go to state 17
+
+
+State 9
+
+    8 term: LPAREN expr • RPAREN
+
+    RPAREN  shift, and go to state 18
+
+
+State 10
+
+    0 $accept: input $end •
+
+    $default  accept
+
+
+State 11
+
+    3 lines: oneline EOLN •
+    4      | oneline EOLN • lines
+
+    error   shift, and go to state 1
+    LPAREN  shift, and go to state 2
+    NUMBER  shift, and go to state 3
+
+    $end  reduce using rule 3 (lines)
+
+    lines    go to state 19
+    oneline  go to state 6
+    term     go to state 7
+
+
+State 12
+
+   10 oper: PLUS •
+
+    $default  reduce using rule 10 (oper)
+
+
+State 13
+
+   11 oper: MINUS •
+
+    $default  reduce using rule 11 (oper)
+
+
+State 14
+
+   12 oper: TIMES •
+
+    $default  reduce using rule 12 (oper)
+
+
+State 15
+
+   13 oper: DIVIDE •
+
+    $default  reduce using rule 13 (oper)
+
+
+State 16
+
+   14 oper: POWER •
+
+    $default  reduce using rule 14 (oper)
+
+
+State 17
+
+    9 expr: term oper • term
+
+    LPAREN  shift, and go to state 2
+    NUMBER  shift, and go to state 3
+
+    term  go to state 20
+
+
+State 18
+
+    8 term: LPAREN expr RPAREN •
+
+    $default  reduce using rule 8 (term)
+
+
+State 19
+
+    4 lines: oneline EOLN lines •
+
+    $default  reduce using rule 4 (lines)
+
+
+State 20
+
+    9 expr: term oper term •
+
+    $default  reduce using rule 9 (expr)
