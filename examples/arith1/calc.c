@@ -1,20 +1,22 @@
 /*
  * Simple arithmetic program as a lex/yacc example
  *
- * Shawn Ostermann -- Wed Feb  7, 2022
+ * Shawn Ostermann -- Sept 11, 2022
  */
  
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "parser.h"
+#include "parser.tab.h"  // created by bison
 #include "calc.h"
 
 /* globals */
 
 
 /* local routines */
-static long int evalexpr(struct opchain *pop);
+static void doexpr(struct assignment *pass);
+
+
 
 int
 main(
@@ -32,41 +34,41 @@ main(
     exit(0);
 }
 
-static long int
-evalexpr(
-    struct opchain *pop)
+
+static void
+doexpr(
+    struct assignment *pass)
 {
-    long int sum = 0;
-    if (pop) {
-        sum = pop->number;
-        printf("%d", pop->number);
-    }
-    while (pop) {
-        if (pop->next != NULL) {
-            long int nextterm = (pop->next)->number;
-            switch(pop->operator) {
-                case PLUS:    printf(" + "); sum += nextterm; break;
-                case MINUS:   printf(" - "); sum -= nextterm; break;
-                case TIMES:   printf(" * "); sum *= nextterm; break;
-                case DIVIDE:  printf(" / "); sum /= nextterm; break;
-                default:  printf(" ? ");
-                }
-            printf("%d", (int) nextterm);
+    int i;
+    int sum;
+    int nextterm;
+
+    printf("  Number of operations: %d\n", pass->nops);
+    printf("  Question: '");
+    sum = pass->numbers[0];
+    for (i=0; i < pass->nops; ++i) {
+        printf(" %d", pass->numbers[i]);
+        if (i+1 < pass->nops) {
+            nextterm = pass->numbers[i+1];
+                switch(pass->operators[i]) {
+                case PLUS:    printf(" +"); sum += nextterm; break;
+                case MINUS:   printf(" -"); sum -= nextterm; break;
+                case TIMES:   printf(" *"); sum *= nextterm; break;
+                case DIVIDE:  printf(" /"); sum /= nextterm; break;
+                default:  printf("? ");
+            }
         }
-        pop=pop->next;
     }
-    printf("\n");
-    return(sum);
+    printf("'\n");
+    printf("  answer is %d\n\n", sum);
 }
 
 
 void
 doline(
-    struct opchain *pop)
+    struct assignment *pass)
 {
     printf("Read a line:\n");
 
-    printf("  Question: ");
-    long int sum = evalexpr(pop);
-    printf("  answer: %ld\n\n", sum);
+    doexpr(pass);
 }

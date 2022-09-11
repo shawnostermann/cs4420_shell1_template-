@@ -3,11 +3,15 @@
  *
  */
 
-/* recursive tree structure shared by parser and main program */
-struct opchain {
-    int number;
-    int operator;
-    struct opchain *next;
+
+#define MAX_OPERATIONS 100
+
+
+/* This is the definition of the "assignment" structure */
+struct assignment {
+    int	numbers[MAX_OPERATIONS];
+    int	operators[MAX_OPERATIONS];
+    int	nops;
 };
 
 
@@ -15,5 +19,5 @@ struct opchain {
 extern int yydebug;
 
 /* routine decls */
-void doline(struct opchain *pop);
+void doline(struct assignment *pass);
 int yyparse(void);

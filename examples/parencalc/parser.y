@@ -21,7 +21,7 @@ void yywarn(const char *s,...);
 
 
 
-%token EOLN PLUS MINUS TIMES DIVIDE POWER LPAREN RPAREN 
+%token EOLN PLUS MINUS TIMES DIVIDE LPAREN RPAREN
 %token <number> NUMBER  
   
 %type <pexpr> expr term
@@ -30,50 +30,49 @@ void yywarn(const char *s,...);
 
 %% 	/* beginning of the parsing rules	*/
 input	: lines
-		|
-		;
+	|
+  	;
 
 lines	: oneline EOLN
-		| oneline EOLN lines
-		;
+	| oneline EOLN lines
+	;
 
 oneline : term
-			{ doline($1); }
-		| error
-			/* if we got an error on the line, don't call the C program */
-		;
+		{ doline($1); }
+	| error
+	/* if we got an error on the line, don't call the C program */
+	;
 
 term	: NUMBER
-			{
-				struct exprtree *pexpr;
+	  {
+	      struct exprtree *pexpr;
 
-				pexpr = (struct exprtree *) malloc(sizeof(struct exprtree));
-				pexpr->left = pexpr->right = NULL;
-				pexpr->number = $1;
-				$$ = pexpr;
-			}
-		| LPAREN expr RPAREN
-	  		{ $$ = $2; }
+	      pexpr = (struct exprtree *) malloc(sizeof(struct exprtree));
+	      pexpr->left = pexpr->right = NULL;
+	      pexpr->number = $1;
+	      $$ = pexpr;
+	  }
+	| LPAREN expr RPAREN
+	  { $$ = $2; }
 	;
 
 expr	: term oper term
-			{
-				struct exprtree *pexpr;
+	  {
+	      struct exprtree *pexpr;
 
-				pexpr = (struct exprtree *) malloc(sizeof(struct exprtree));
-				pexpr->left = $1;
-				pexpr->right = $3;
-				pexpr->operator = $2;
-				$$ = pexpr;
-			}
+	      pexpr = (struct exprtree *) malloc(sizeof(struct exprtree));
+	      pexpr->left = $1;
+	      pexpr->right = $3;
+	      pexpr->operator = $2;
+	      $$ = pexpr;
+	  }
 
 /* one of the 4 operators we understand */
 oper	: PLUS		{ $$ = PLUS;}
-		| MINUS		{ $$ = MINUS;}
-		| TIMES		{ $$ = TIMES;}
-		| DIVIDE	{ $$ = DIVIDE;}
-		| POWER		{ $$ = POWER;}
-		;
+	| MINUS		{ $$ = MINUS;}
+	| TIMES		{ $$ = TIMES;}
+	| DIVIDE	{ $$ = DIVIDE;}
+	;
 
 %%
 
@@ -81,3 +80,4 @@ void yyerror(const char *s,...)
 {
 	fprintf(stderr, "parser: Bad syntax (%s)\n", s);
 }
+

@@ -1,8 +1,8 @@
 #
 # Sample lex/yacc Makefile
-# Shawn Ostermann - Mon Sep 24, 2001
+# Shawn Ostermann - Sept 10, 2022
 #
-CFLAGS = -g -Wall -Werror -O3
+CFLAGS = -Wall -Werror -O2
 CC = gcc
 
 PROGRAM = parencalc
@@ -18,7 +18,7 @@ HFILE = parencalc.h
 
 
 # compute the OFILES
-OFILES = ${CFILES:.c=.o}
+OFILES = ${CFILES:.cc=.o}
 
 # all of the .o files that the program needs
 OBJECTS = parser.tab.o lex.yy.o ${OFILES}
@@ -33,22 +33,17 @@ ${PROGRAM} : ${OBJECTS}
 # 
 # Turn the parser.y file into parser.tab.c using "bison"
 # 
-# Also, bison generates a header file called "parser.tab.h" which lex needs
-# It's almost always the same, so we'll have lex use a different
-# file and just update it when parser.tab.h changes (to save compiles)
-#
 parser.tab.c : parser.y ${HFILES}
 	bison -dvt ${YFLAGS} parser.y
 parser.tab.o: parser.tab.c
 	${CC} ${CFLAGS} -c parser.tab.c
 parser.tab.h: parser.tab.c
-parser.h: parser.tab.h
-	cmp -s perser.tab.h parser.h || cp parser.tab.h parser.h
+
 
 # 
-#  Turn the scanner.l file into lex.yy.c using "lex"
+#  Turn the scanner.l file into lex.yy.c using "flex"
 # 
-lex.yy.c : scanner.l parser.h ${HFILE}
+lex.yy.c : scanner.l parser.tab.h ${HFILE}
 	flex ${LFLAGS} scanner.l
 lex.yy.o: lex.yy.c
 	${CC} ${CFLAGS} -Wno-unused-function -g -c lex.yy.c
@@ -56,7 +51,10 @@ lex.yy.o: lex.yy.c
 #
 # File dependencies
 #
-${OFILES}: ${HFILE} parser.h
+${OFILES}: ${HFILE} parser.tab.h tokens.h
+
+tokens.h: parser.y
+
 
 clean:
 	/bin/rm -f *.o lex.yy.c parser.tab.c ${PROGRAM} parser.h parser.output *.tab.c *.tab.h core
