@@ -41,13 +41,11 @@ parser.tab.c : parser.y ${HFILES}
 parser.tab.o: parser.tab.c
 	${CC} ${CFLAGS} -c parser.tab.c
 parser.tab.h: parser.tab.c
-parser.h: parser.tab.h
-	cmp -s perser.tab.h parser.h || cp parser.tab.h parser.h
 
 # 
 #  Turn the scanner.l file into lex.yy.c using "lex"
 # 
-lex.yy.c : scanner.l parser.h ${HFILE}
+lex.yy.c : scanner.l parser.tab.h ${HFILE}
 	flex ${LFLAGS} scanner.l
 lex.yy.o: lex.yy.c
 	${CC} ${CFLAGS} -Wno-unused-function -g -c lex.yy.c
@@ -55,7 +53,7 @@ lex.yy.o: lex.yy.c
 #
 # File dependencies
 #
-${OFILES}: ${HFILE} parser.h
+${OFILES}: ${HFILE} parser.tab.h
 
 test: bash
 	-chmod a+rx ./test.*
@@ -70,4 +68,4 @@ test: bash
 	
 
 clean:
-	/bin/rm -f *.o lex.yy.c parser.tab.c ${PROGRAM} parser.h parser.output *.tab.c *.tab.h core test.*.myoutput test.*.correct test.*.input
+	/bin/rm -f *.o lex.yy.c parser.tab.c ${PROGRAM} parser.tab.h parser.output *.tab.c *.tab.h core test.*.myoutput test.*.correct test.*.input

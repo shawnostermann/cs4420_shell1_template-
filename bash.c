@@ -1,12 +1,12 @@
 /*
  * Headstart for Ostermann's shell project
  *
- * Shawn Ostermann -- Sept 9, 2021
+ * Shawn Ostermann -- Sept 11, 2022
  */
  
 #include <stdio.h>
 #include <stdlib.h>
-#include "parser.h"
+#include "parser.tab.h"
 #include "bash.h"
 
 
