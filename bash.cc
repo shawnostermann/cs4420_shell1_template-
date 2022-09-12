@@ -16,14 +16,17 @@ extern "C" {
 extern "C" void yyset_debug(int d);
 }
 
+// global debugging flag
+int debug = 0;
+
 
 int
 main(
      int argc,
      char *argv[])
 {
-    yydebug = 1;  /* turn on ugly YACC debugging */
-    yydebug = 0;  /* turn off ugly YACC debugging */
+    if (debug)
+        yydebug = 1;  /* turn on ugly YACC debugging */
 
     /* parse the input file */
     yyparse();

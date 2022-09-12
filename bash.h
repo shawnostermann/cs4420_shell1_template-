@@ -24,6 +24,7 @@ struct command {
 
 /* externals */
 extern int yydebug;
+extern int debug;
 
 
 /* global routine decls */
