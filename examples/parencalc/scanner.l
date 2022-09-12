@@ -13,16 +13,12 @@
 /* goes directly into the lex.yy.c file */
 %}
 
-/* shorthand definitions for later */
-DIGIT		[0123456789]
-LETTER		[a-zA-Z]
-WHITESPACE	[ \t]
 
 
 /* The rest of this after the '%%' is lex rules */
 %%
 
-{WHITESPACE}+	{ }  /* Just ignore white space */
+[ \t]+	        { }  /* Just ignore white space */
 
 "\n" 	        { return(EOLN); } 
 "+" 	        { return(PLUS); }
@@ -33,7 +29,7 @@ WHITESPACE	[ \t]
 ")" 	        { return(RPAREN); }
 
 
-{DIGIT}+	{
+[0123456789]+	{
     /* a number is a sequence of digits */
     yylval.number = atoi(yytext);  /* convert the string to binary */
     return(NUMBER);
