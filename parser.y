@@ -8,6 +8,7 @@ int yylex();
 void yyerror(const char *s,...);
 void yywarn(const char *s,...);
 
+// data structure to hold a linked list of arguments for a command
 struct args {
     char *arg;
     struct args *next;
@@ -33,11 +34,13 @@ static int synerrors = 0;
 
 
 
-%token EOLN PIPE INPUT
-%token <number> OUTPUT OUTPUT_APPEND
+%token EOLN PIPE 
+%token INFILE					// standard input redirection
+%token OUTFILE OUTFILE_APPEND	// standard output redirection
+%token ERRFILE ERRFILE_APPEND	// standard error redirection
 %token <string> WORD
 
-%type <pcmd> line 
+%type <pcmd> line 	// main datatype from bash.h
   
 
 %% 	/* beginning of the parsing rules	*/
