@@ -16,6 +16,8 @@ void yyerror(const char *s,...);
 void yywarn(const char *s,...);
 int yywrap(void) {return(1);}    // should be in library, but here it is for github
 
+/* useful global variables */
+extern int debug;
 
 /* Everything up to the funny characters on the next line */
 /* goes directly into the lex.yy.c file */
@@ -31,13 +33,23 @@ int yywrap(void) {return(1);}    // should be in library, but here it is for git
 "\n" 	        { return(EOLN); } 
 
 %{
-/* you need rules for the other reserved characters */
+/* this rule will get you "started" with the WORD token.  As you work on the project,
+   you'll need to update it to support other characters too... */
+%}
+[a-zA-Z]+ {
+    /* a "WORD" - will need to be modified */
+    if (debug)
+        printf("scanner saw WORD '%s'\n", yytext);
+    yylval.string = strdup(yytext);  /* make a copy of the string */
+    return(WORD);
+}
 
 
-/* you need a rule that returns WORD */
 
+%{
+/* you need rules for the other reserved characters below */
 
-/* you need a rule that returns "strings" as WORDS */
+/* you will also need a rule that returns "strings" as WORDS */
 %}
 
 
