@@ -2,11 +2,13 @@
 # Sample lex/yacc Makefile
 # Shawn Ostermann - Mon Sep 24, 2001
 #
-CFLAGS = -g -Wall -Werror -O3
+CFLAGS = -Wall -Werror -O2
 CC = gcc
+CXX = g++
 
 PROGRAM = bash
-CFILES = bash.c
+CFILES = 
+CCFILES = bash.cc
 HFILE = bash.h
 
 
@@ -18,29 +20,28 @@ HFILE = bash.h
 
 
 # compute the OFILES
-OFILES = ${CFILES:.c=.o}
+OFILES = ${CFILES:.c=.o} ${CCFILES:.cc=.o}
 
 # all of the .o files that the program needs
 OBJECTS = parser.tab.o lex.yy.o ${OFILES}
 
 
 # How to make the whole program
+# (don't forget the Lex Library "-ll")
 ${PROGRAM} : ${OBJECTS}
-	${CC} ${CFLAGS} ${OBJECTS} -o ${PROGRAM} 
+	${CXX} ${CFLAGS} ${OBJECTS} -o ${PROGRAM} 
 
 
 # 
 # Turn the parser.y file into parser.tab.c using "bison"
 # 
-# Also, bison generates a header file called "parser.tab.h" which lex needs
-# It's almost always the same, so we'll have lex use a different
-# file and just update it when parser.tab.h changes (to save compiles)
-#
+
 parser.tab.c : parser.y ${HFILES}
 	bison -dvt ${YFLAGS} parser.y
 parser.tab.o: parser.tab.c
 	${CC} ${CFLAGS} -c parser.tab.c
 parser.tab.h: parser.tab.c
+
 
 # 
 #  Turn the scanner.l file into lex.yy.c using "lex"
