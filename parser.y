@@ -18,14 +18,14 @@ struct args {
 struct redirs {
     int redir_token;
 	char *filename;
-    struct redir *next;
+    struct redirs *next;
 };
 
 
 /* include debugging code, in case we want it */
 #define YYDEBUG 1
 
-int lines = 1;
+int lines = 0;
 static int synerrors = 0;
 
 
@@ -62,9 +62,8 @@ lines	: oneline
 	| oneline lines
 	;
 
-oneline : line
+oneline : line eoln
 		{ doline($1); }
-	  eoln
  	| eoln	/* blank line, do nothing */
 	| error eoln
 	/* if we got an error on the line, don't call the C program */
